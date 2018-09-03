@@ -190,4 +190,9 @@ class User extends ActiveRecord implements IdentityInterface
     {
         $this->password_reset_token = null;
     }
+
+    public function getNickNameUrl()
+    {
+        return $this->nickname ? $this->nickname : $this->getId(); 
+    }
 }

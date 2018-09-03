@@ -16,7 +16,7 @@ return [
         'user' => [
             'class' => 'frontend\modules\user\Module',
         ],
-    ],    
+    ],
     'components' => [
         'request' => [
             'csrfParam' => '_csrf-frontend',
@@ -47,6 +47,7 @@ return [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
+                'profile/<nickname:\w+>' => 'user/profile/view'
             ],
         ],
         'authClientCollection' => [

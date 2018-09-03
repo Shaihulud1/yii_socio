@@ -8,17 +8,20 @@ use frontend\models\User;
 
 class ProfileController extends Controller
 {
-    public function actionView($id)
+    public function actionView($nickname)
     {
-      $userInfo = $this->findUser($id);
+      $userInfo = $this->findUser($nickname);
       return $this->render('view', [
         'user' => $userInfo,
       ]);
     }
 
-    private function findUser($id)
+    private function findUser($nickname)
     {
-      $result = User::find()->where(['id' => $id])-> one();
+      $result = User::find()
+                ->where(['nickname' => $nickname])
+                ->orWhere(['id' => $nickname])
+                ->one();
       if(!empty($result))
         return $result;
       throw new NotFoundHttpException();

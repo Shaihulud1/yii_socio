@@ -22,7 +22,7 @@ $this->title = 'My Yii Application';
                   <?foreach($arUsers as $user):?>
                       <div class="user-item">
                           <h3><?=$user->username?>(<?=$user->email?>)</h3>
-                          <a href="<?=Url::to(['/user/profile/view', 'id' => $user->id])?>">Перейти в профиль</a>
+                          <a href="<?=Url::to(['/user/profile/view', 'nickname' => $user->getNickNameUrl()])?>">Перейти в профиль</a>
                       </div>
                       <hr>
                   <?endforeach;?>
