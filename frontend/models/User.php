@@ -4,6 +4,7 @@ namespace frontend\models;
 use Yii;
 use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
+use yii\web\NotFoundHttpException;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
 
@@ -193,6 +194,48 @@ class User extends ActiveRecord implements IdentityInterface
 
     public function getNickNameUrl()
     {
-        return $this->nickname ? $this->nickname : $this->getId(); 
+        return $this->nickname ? $this->nickname : $this->getId();
+    }
+
+    public function followUser($userTarget)
+    {
+        if($this->getId() == $userTarget->getId())
+            throw new NotFoundHttpException();
+        $redis = Yii::$app->redis;
+        $redis->sadd("user:{$this->getId()}:subscriptions", $userTarget->getId());
+        $redis->sadd("user:{$userTarget->getId()}:followers", $this->getId());
+    }
+
+    public function unFollowUser($userTarget)
+    {
+        if($this->getId() == $userTarget->getId())
+            throw new NotFoundHttpException();
+        $redis = Yii::$app->redis;
+        $redis->srem("user:{$this->getId()}:subscriptions", $userTarget->getId());
+        $redis->srem("user:{$userTarget->getId()}:followers", $this->getId());
+    }
+
+    public function getSubscriptions()
+    {
+        $redis = Yii::$app->redis;
+        $key = "user:{$this->getId()}:subscriptions";
+        $redIds = $redis->smembers($key);
+        return User::find()->select('id, username, nickname, email')->where(['id' => $redIds])->orderBy('username')->asArray()->all();
+    }
+
+    public function getFollowers()
+    {
+        $redis = Yii::$app->redis;
+        $key = "user:{$this->getId()}:followers";
+        $redIds = $redis->smembers($key);
+        return User::find()->select('id, username, nickname, email')->where(['id' => $redIds])->orderBy('username')->asArray()->all();
+    }
+
+    public function subscribeAlready()
+    {
+        // $curUser = Yii::$app->user->identity->id;
+        // $redis = Yii::$app->redis;
+        // print_r($curUser);
+        // $key = "get:{$this->getId()}:followers";
     }
 }
