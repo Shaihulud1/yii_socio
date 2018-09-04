@@ -12,14 +12,11 @@ use yii\helpers\Url;
 <?if($user->about):?>
     <p>Info: <?=HtmlPurifier::process($user->about)?></p>
 <?endif;?>
-<?=$user->subscribeAlready($user->getId())?>
-<?if($user->subscribeAlready($user->getId())):?>
-
-<?else:?>
-
+<?if((!$user->isSubscribe($user->getId()) || Yii::$app->user->isGuest) && Yii::$app->user->id != $user->id):?>
+    <a href="<?=Url::to(['/user/profile/subscribe', 'id' => $user->getId()])?>" class="btn btn-info">Subscribe</a>
+<?elseif(Yii::$app->user->id != $user->id):?>
+    <a href="<?=Url::to(['/user/profile/unsubscribe', 'id' => $user->getId()])?>" class="btn btn-info">Unsubscribe</a>
 <?endif;?>
-<a href="<?=Url::to(['/user/profile/subscribe', 'id' => $user->getId()])?>" class="btn btn-info">Subscribe</a>
-<a href="<?=Url::to(['/user/profile/unsubscribe', 'id' => $user->getId()])?>" class="btn btn-info">Unsubscribe</a>
 <?$arSubscribtions = $user->getSubscriptions();?>
 <?if($arSubscribtions):?>
     <h2>Subscribtions:</h2>

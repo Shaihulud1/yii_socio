@@ -231,11 +231,10 @@ class User extends ActiveRecord implements IdentityInterface
         return User::find()->select('id, username, nickname, email')->where(['id' => $redIds])->orderBy('username')->asArray()->all();
     }
 
-    public function subscribeAlready()
+    public function isSubscribe()
     {
-        // $curUser = Yii::$app->user->identity->id;
-        // $redis = Yii::$app->redis;
-        // print_r($curUser);
-        // $key = "get:{$this->getId()}:followers";
+        $curUserId = Yii::$app->user->identity->id;
+        $redis = Yii::$app->redis;
+        return $redis->sismember("user:{$this->getId()}:followers", $curUserId);
     }
 }
