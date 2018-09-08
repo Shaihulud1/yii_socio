@@ -75,4 +75,7 @@ return [
 
     ],
     'params' => $params,
+    'aliases' => [
+        '@defaultProfileImage' => '/upload/images/profile/default.png'
+    ],
 ];

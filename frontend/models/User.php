@@ -237,4 +237,14 @@ class User extends ActiveRecord implements IdentityInterface
         $redis = Yii::$app->redis;
         return $redis->sismember("user:{$this->getId()}:followers", $curUserId);
     }
+
+    public function getUserPicture()
+    {
+        return $user->picture ? $user->picture : Yii::getAlias('@defaultProfileImage');
+    }
+
+    public function isCurrentUser()
+    {
+        return Yii::$app->user->id == $this->getId() ? true : false;
+    }
 }
