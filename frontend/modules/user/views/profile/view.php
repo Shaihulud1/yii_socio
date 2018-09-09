@@ -6,7 +6,6 @@ use yii\helpers\HtmlPurifier;
 use yii\helpers\Url;
 use dosamigos\fileupload\FileUpload;
 ?>
-
 <p>
     <img src="<?=$user->getUserPicture()?>" alt="">
 </p>
@@ -24,23 +23,36 @@ use dosamigos\fileupload\FileUpload;
         'url' => ['/user/profile/picture-upload', 'id' => $user->id], // your url, this is just for demo purposes,
         'options' => ['accept' => 'image/*'],
         'clientOptions' => [
-            'maxFileSize' => 2000000
+            'maxFileSize' => 1024 * 2
         ],
-        // Also, you can specify jQuery-File-Upload events
-        // see: https://github.com/blueimp/jQuery-File-Upload/wiki/Options#processing-callback-options
         'clientEvents' => [
             'fileuploaddone' => 'function(e, data) {
                                     console.log(e);
                                     console.log(data);
+                                    if(data.result.success){
+                                        $(".result-image-prepare").attr("src", data.result.result);
+                                        $(".result-image-prepare").show();
+                                        $(".result-image-upload fail").hide();
+                                        $(".save-avatar").show();
+                                    }else{
+                                        $(".result-image-upload fail").html(data.result.result).hide();
+                                        $(".result-image-prepare").hide();
+                                        $(".result-image-upload fail").show();
+                                        $(".save-avatar").hide();
+                                    }
                                 }',
-            'fileuploadfail' => 'function(e, data) {
+            /*'fileuploadfail' => 'function(e, data) {
                                     console.log(e);
                                     console.log(data);
-                                }',
+                                }',*/
         ],
-    ]);
-    Modal::end();
-endif;?>
+    ]);?>
+    <img src="" class="result-image-prepare" alt="">
+    <p class="result-image-upload fail" style="display:none;"></p>
+    <a href="<?=Url::to(['/user/profile/set-avatar', 'id' => $user->getId()])?>" class="btn btn-success save-avatar" style="display:none">Save avatar</a>
+    <?Modal::end();
+endif;
+//Url::to(['/user/profile/unsubscribe', 'id' => $user->getId()])?>
 <p>Username: <?=Html::encode($user->username)?></p>
 <p>Email: <?=Html::encode($user->email)?></p>
 <?if($user->nickname):?>

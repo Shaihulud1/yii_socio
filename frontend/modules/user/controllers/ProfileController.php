@@ -8,6 +8,7 @@ use frontend\models\User;
 use frontend\modules\user\models\forms\PictureForm;
 use dosamigos\fileupload\FileUpload;
 use yii\web\UploadedFile;
+use yii\web\Response;
 
 
 class ProfileController extends Controller
@@ -68,10 +69,27 @@ class ProfileController extends Controller
         $request = Yii::$app->request;
         $id = $request->get('id');
         if($request->isPost && !empty($id)){
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $curUser = Yii::$app->user->identity;
+            if($curUser->id != $id)
+                return ['success' => false, 'result' => 'error'];
             $modelPicture = new PictureForm();
             $filePicture = UploadedFile::getInstance($modelPicture, 'picture');
-            $saveResult = $modelPicture->savePrepareResult($filePicture, $id);
+            return $modelPicture->savePrepareResult($filePicture, $id);
         }
     }
 
+    public function actionSetAvatar()
+    {
+        $request = Yii::$app->request;
+        $id = $request->get('id');
+        if($request->isGet && !empty($id)){
+            $curUser = Yii::$app->user->identity;
+            if($curUser->id == $id){
+                $modelPicture = new PictureForm();
+                $modelPicture->setAvatar();
+            }
+            return $this->redirect(['/user/profile/view', "nickname" => $curUser->getNickNameUrl()]);
+        }
+    }
 }
