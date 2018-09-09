@@ -5,15 +5,22 @@ use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use frontend\models\User;
+use frontend\modules\user\models\forms\PictureForm;
+use dosamigos\fileupload\FileUpload;
+use yii\web\UploadedFile;
+
 
 class ProfileController extends Controller
 {
     public function actionView($nickname)
     {
-      $userInfo = $this->findUser($nickname);
-      return $this->render('view', [
-        'user' => $userInfo,
-      ]);
+        $userInfo = $this->findUser($nickname);
+        $modelPicture = new PictureForm;
+
+        return $this->render('view', [
+            'user' => $userInfo,
+            'modelPicture' => $modelPicture,
+        ]);
     }
 
     public function actionSubscribe($id)
@@ -54,6 +61,17 @@ class ProfileController extends Controller
       if(!empty($result))
         return $result;
       throw new NotFoundHttpException();
+    }
+
+    public function actionPictureUpload()
+    {
+        $request = Yii::$app->request;
+        $id = $request->get('id');
+        if($request->isPost && !empty($id)){
+            $modelPicture = new PictureForm();
+            $filePicture = UploadedFile::getInstance($modelPicture, 'picture');
+            $saveResult = $modelPicture->savePrepareResult($filePicture, $id);
+        }
     }
 
 }

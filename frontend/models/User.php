@@ -243,8 +243,9 @@ class User extends ActiveRecord implements IdentityInterface
         return $user->picture ? $user->picture : Yii::getAlias('@defaultProfileImage');
     }
 
-    public function isCurrentUser()
+    public function isCurrentUser($targetId = false)
     {
-        return Yii::$app->user->id == $this->getId() ? true : false;
+        $targetId = $targetId ? $targetId : $this->getId();
+        return Yii::$app->user->id == $targetId ? true : false;
     }
 }
