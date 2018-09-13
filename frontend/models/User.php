@@ -240,7 +240,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     public function getUserPicture()
     {
-        return $this->picture ? Yii::getAlias('@profilesPictureFolder').'/'.$this->picture : Yii::getAlias('@defaultProfileImage');
+        return $this->picture && file_exists(Yii::getAlias('@web').'upload/images/profile/'.$this->picture) ? Yii::getAlias('@profilesPictureFolder').'/'.$this->picture : Yii::getAlias('@defaultProfileImage');
     }
 
     public function isCurrentUser($targetId = false)
