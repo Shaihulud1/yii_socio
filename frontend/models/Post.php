@@ -53,4 +53,40 @@ class Post extends \yii\db\ActiveRecord
     {
         return User::findOne($this->user_id);
     }
+
+    public function checkLikeDislike($type, $user_id)
+    {
+        $redis = Yii::$app->redis;
+        return $redis->sismember("post:{$this->id}:".$type."", $user_id);
+    }
+
+    public function addLikeDislike($type, $user_id)
+    {
+        $redis = Yii::$app->redis;
+        return $redis->sadd("post:{$this->id}:".$type."", $user_id);
+    }
+
+    public function deleteLikeDislike($type, $user_id)
+    {
+        $redis = Yii::$app->redis;
+        return $redis->srem("post:{$this->id}:".$type."", $user_id);
+    }
+
+    public function getLikesAndDislikes($user_id = false)
+    {
+        $redis = Yii::$app->redis;
+        $likeKey = "post:{$this->id}:like";
+        $dislikeKey = "post:{$this->id}:dislike";
+        $dislikes = $redis->smembers($dislikeKey);
+        $likes = $redis->smembers($likeKey);
+        if($user_id){
+            $userVote = false;
+            if(in_array($user_id, $dislikes))
+                $userVote = 'DISLIKE';
+            elseif(in_array($user_id, $likes))
+                $userVote = 'LIKE';
+        }
+        return ['dislike' => $dislikes, 'like' => $likes, "user_vote" => $userVote];
+    }
+
 }
