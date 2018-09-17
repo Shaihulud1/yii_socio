@@ -4,9 +4,7 @@ use yii\helpers\HtmlPurifier;
 use yii\helpers\Url;
 ?>
 <p>
-    <?
-    print_r($arDislikeLike);
-    if($picture = $post->getPostImage()):?>
+    <?if($picture = $post->getPostImage()):?>
         <img src="<?=$picture?>" alt="">
     <?endif;?>
     <p><?=HtmlPurifier::process($post->description)?></p>
