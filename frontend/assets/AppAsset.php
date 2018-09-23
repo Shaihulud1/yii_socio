@@ -18,6 +18,7 @@ class AppAsset extends AssetBundle
         'js/main.js',
     ];
     public $depends = [
+        'frontend\assets\VueAsset',
         'yii\web\YiiAsset',
         'yii\bootstrap\BootstrapAsset',
     ];

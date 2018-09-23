@@ -10,7 +10,15 @@ use yii\helpers\Url;
     <p><?=HtmlPurifier::process($post->description)?></p>
     <?$user = $post->getCreatedUserData();?>
     <p>created by <a href="<?=Url::to(['/user/profile/view', 'nickname' => $user->getNickNameUrl()])?>"><?=$user->username?></a> <?=date('d-m-Y', $post->created_at);?></p>
-    <a href="#" class="btn btn-primary button-vote like-btn <?=$arDislikeLike['user_vote'] == 'LIKE' ? 'btn-success' : ''?>" data-id="<?=$post->id?>" data-type="LIKE">Like<?=count($arDislikeLike['like']) > 0 ? '('.count($arDislikeLike['like']).')' : ''?></a>
-    <a href="#" class="btn btn-primary button-vote dislike-btn <?=$arDislikeLike['user_vote'] == 'DISLIKE' ? 'btn-danger' : ''?>" data-id="<?=$post->id?>" data-type="DISLIKE">Dislike<?=count($arDislikeLike['dislike']) > 0 ? '('.count($arDislikeLike['dislike']).')' : ''?></a>
+    <div id="app-vote">
+        <vote-likes axi-url="/post/default/vote"
+                    count-likes="<?=count($arDislikeLike['like'])?>"
+                    count-dislikes="<?=count($arDislikeLike['dislike'])?>"
+                    user-like="<?=$arDislikeLike['user_vote'] == 'LIKE' ? true : false?>"
+                    user-dislike="<?=$arDislikeLike['user_vote'] == 'DISLIKE' ? true : false?>"
+                    user-vote="active"
+                    post-id="<?=$post->id?>">
+        </vote-likes>
+    </div>
 </p>
 <img src="" alt="">
