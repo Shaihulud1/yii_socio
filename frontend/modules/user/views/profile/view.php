@@ -82,3 +82,13 @@ endif;
         <a href="<?=Url::to(['/user/profile/view', 'nickname' => $follower['nickname'] ? $follower['nickname'] : $follower['id']])?>">go to Profile</a>
     <?endforeach;?>
 <?endif;?>
+<?if(!empty($postsData)):?>
+    <h2>Posts:</h2>
+    <?foreach($postsData as $post):?>
+        <p>
+            <a href="<?=Url::to(['/post/default/view', 'id' => $post['id']])?>">
+                <img src="<?=$post['picture']?>" alt="">
+            </a>
+        </p>
+    <?endforeach;?>
+<?endif;?>

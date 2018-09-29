@@ -5,10 +5,12 @@ use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use frontend\models\User;
+use frontend\models\Post;
 use frontend\modules\user\models\forms\PictureForm;
 use dosamigos\fileupload\FileUpload;
 use yii\web\UploadedFile;
 use yii\web\Response;
+use frontend\modules\post\controllers;
 
 
 class ProfileController extends Controller
@@ -17,10 +19,12 @@ class ProfileController extends Controller
     {
         $userInfo = $this->findUser($nickname);
         $modelPicture = new PictureForm;
-
+        $postModel = new Post;
+        $arPostData = $postModel->getUserPosts($userInfo->id);
         return $this->render('view', [
             'user' => $userInfo,
             'modelPicture' => $modelPicture,
+            'postsData' => $arPostData,
         ]);
     }
 

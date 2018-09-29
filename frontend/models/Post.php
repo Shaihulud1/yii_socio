@@ -89,4 +89,23 @@ class Post extends \yii\db\ActiveRecord
         return ['dislike' => $dislikes, 'like' => $likes, "user_vote" => $userVote];
     }
 
+    public function getUserPosts($user_id)
+    {
+        $arPosts = Post::find()
+            ->select('id, user_id, picture, description, created_at')
+            ->where(['user_id' => $user_id])
+            ->asArray()
+            ->all();
+        foreach($arPosts as $key => $post)
+        {
+            if(!empty($post['picture']) && file_exists(Yii::getAlias('@web').'upload/images/posts/'.$this->picture))
+            {
+                $arPosts[$key]['picture'] = Yii::getAlias('@postsPictureFolder').'/'.$post['picture'];
+            }else{
+                unset($arPosts[$key]);
+            }
+        }
+        return $arPosts;
+    }
+
 }
